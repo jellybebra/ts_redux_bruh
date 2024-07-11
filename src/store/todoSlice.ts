@@ -11,7 +11,9 @@ interface TodoState {
 }
 
 const initialState: TodoState = {
-  todos: []
+  todos: localStorage.getItem("todos")
+    ? JSON.parse(localStorage.getItem("todos")!)
+    : [],
 }
 
 const todoSlice = createSlice({
@@ -24,14 +26,17 @@ const todoSlice = createSlice({
         name: action.payload.name,
         checked: false,
       });
+      localStorage.setItem("todos", JSON.stringify(state.todos));
     },
     removeTodo(state, action: PayloadAction<{ id: number }>) {
       state.todos = state.todos.filter(todo => todo.id !== action.payload.id);
+      localStorage.setItem("todos", JSON.stringify(state.todos));
     },
     toggleTodo(state, action: PayloadAction<{ id: number }>) {
       const todo = state.todos.find((todo) => todo.id === action.payload.id);
       if (todo) {
         todo.checked = !todo.checked;
+        localStorage.setItem("todos", JSON.stringify(state.todos));
       }
     }
   }
